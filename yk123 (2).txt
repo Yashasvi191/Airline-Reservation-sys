@@ -1,0 +1,881 @@
+/*************AIRLINE RESERVATION********************
+*************CLASS XII C++ PROJECT********************/
+
+#include<fstream.h>
+#include<stdio.h>
+#include<string.h>
+#include<ctype.h>
+#include<process.h>
+#include<conio.h>
+void pto()
+{
+	cout<<"\n\n\t\t\tPress any key to continue";
+	getch();
+
+}
+struct date
+{
+	int dd,mm,yy;
+};
+struct time
+{
+	int hr,min;
+};
+int check_date(date x)
+{
+	if(x.dd>31||(x.yy%4==0 && x.mm==2 && x.dd>29)||(x.mm>12)||(x.yy<16 || x.yy>20))
+		return 0;
+	else
+		return 1;
+}
+void in_date(date &x)
+{
+	cin>>x.dd>>x.mm>>x.yy;
+	if(check_date(x)==0)
+	{
+		cout<<"\n\t\t\tInvalid Date!";
+		cout<<"\n\t\t\tTry again: ";
+		in_date(x);
+	}
+}
+int cmp_date(date x,date y)
+{
+	if(x.yy==y.yy && x.mm==y.mm && x.dd==y.dd)
+		return 1;
+	else
+		return 0;
+}
+void out_date(date x)
+{
+	cout<<x.dd<<"-"<<x.mm<<"-"<<x.yy;
+}
+int check_time(time x)
+{
+	if((x.hr<0 || x.hr>23)||(x.min<0 || x.min>=60))
+		return 0;
+	else
+		return 1;
+}
+void in_time(time &x)
+{
+	cin>>x.hr>>x.min;
+	if(check_time(x)==0)
+	{
+		cout<<"\n\t\t\tInvalid time!";
+		cout<<"\n\t\t\tTry again: ";
+		in_time(x);
+	}
+}
+int cmp_time(time x,time y)
+{
+	if(x.hr==y.hr && x.min==y.min)
+		return 1;
+	else
+		return 0;
+}
+void out_time(time x)
+{
+	cout<<x.hr<<":"<<x.min;
+}
+class flight
+{
+	int fno;
+	char departure[20];
+	char arrival[20];
+	float cost;
+	int avb_seats;
+	date d_date;
+	date a_date;
+	time d_time;
+	time a_time;
+	
+
+	public:
+		flight();
+		void input();
+		void output();
+		
+		int ret_no()
+		{
+			return fno;
+		}
+		char* ret_depart()
+		{
+			return departure;
+		}
+
+		char* ret_arr()
+		{
+			return arrival;
+		}
+		float ret_cost()
+		{
+			return cost;
+		}
+		date ret_d_date()
+		{
+			return d_date;
+		}
+		date ret_a_date()
+		{
+			return a_date;
+		}
+		int ret_seats()
+		{
+			return avb_seats;
+		}
+		void dec_seats(int x)
+		{
+			if(avb_seats>=x)
+			{
+				avb_seats-=x;
+				cout<<"\n\n\t\t\tFlight has been booked!";
+				pto();
+			}
+			else
+				cout<<"\n\n\t\t\tSeats are not available!\n\n";
+		}
+		
+		void cancel(int x)
+		{
+			 avb_seats+=x;
+		}
+};
+
+		flight::flight()
+		{
+			fno=0;
+			strcpy(departure,"NIL");
+			strcpy(arrival,"NIL");
+			cost=0;
+			avb_seats=0;
+		}
+
+		void flight::input()
+		{
+			cout<<"\n\n\t\t\tEnter flight number: ";
+			cin>>fno;
+			cout<<"\t\t\tEnter city of departure: ";
+			gets(departure);
+			cout<<"\t\t\tEnter city of arrival: ";
+			gets(arrival);
+			cout<<"\t\t\tEnter date of departure: ";
+			in_date(d_date);
+			cout<<"\t\t\tEnter time of departure: ";
+			in_time(d_time);
+			cout<<"\t\t\tEnter date of arrival: ";
+			in_date(a_date);
+			cout<<"\t\t\tEnter time of arrival: ";
+			in_time(a_time);
+			cout<<"\t\t\tEnter cost per ticket: ";
+			cin>>cost;
+			cout<<"\t\t\tEnter number of seats: ";
+			cin>>avb_seats;
+		}
+
+		void flight::output()
+		{
+			cout<<"\n\t\t\tFlight number: "<<fno;
+			cout<<"\n\t\t\tCity of departure: ";
+			puts(departure);
+			cout<<"\t\t\tCity of arrival: ";
+			puts(arrival);
+			cout<<"\t\t\tDate of departure: ";
+			out_date(d_date);
+			cout<<"\n\t\t\tTime of departure: ";
+			out_time(d_time);
+			cout<<"\n\t\t\tDate of arrival: ";
+			out_date(a_date);
+			cout<<"\n\t\t\tTime of arrival: ";
+			out_time(a_time);
+			cout<<"\n\t\t\tCost per ticket: "<<cost;
+			cout<<"\n\t\t\tNo of seats available: "<<avb_seats<<"\n\n";
+		}
+class passenger
+{
+	char name[20];
+	char gender;
+	int age;
+	char mob[11];
+	char adr[100];
+	int booking;
+	int fl_no;
+	float amt;
+	
+	public:
+		passenger();
+		void get();
+		void put();
+		void book(int x,int f,float y)
+		{
+			booking=x;
+			fl_no=f;
+			amt=x*y;
+		}
+		char* ret_mob()
+		{
+			return mob;
+		}
+		void cancel()
+		{
+			fl_no=0;
+			booking=0;
+		}
+		int ret_fl()
+		{
+			return fl_no;
+		}
+		int ret_book()
+		{
+			return booking;
+		}
+		float ret_amt()
+		{
+			return amt;
+		}
+};
+		passenger::passenger()
+		{
+			strcpy(name,"NIL");
+			age=0;
+			strcpy(mob,"0");
+			strcpy(adr,"NIL");
+			booking=0;
+			fl_no=0;
+			amt=0;
+		}
+
+		void passenger::get()
+		{
+			cout<<"\n\n\t\t\tEnter name: ";
+			gets(name);
+			cout<<"\t\t\tEnter gender: ";
+			cin>>gender;
+			cout<<"\t\t\tEnter age(in years):" ;
+			cin>>age;
+			cout<<"\t\t\tEnter mobile no: ";
+			gets(mob);
+			cout<<"\t\t\tEnter address: ";
+			gets(adr);
+		}
+		void passenger::put()
+		{
+			cout<<"\n\n\t\t\tName: ";
+			puts(name);
+			cout<<"\t\t\tGender: "<<gender;
+			cout<<"\n\t\t\tAge: "<<age;
+			cout<<"\n\t\t\tMobile no: "<<mob;
+			cout<<"\n\t\t\tAddress: ";
+			puts(adr);
+		}
+
+
+void add_flight()
+{
+	fstream file("flight.dat",ios::binary|ios::in|ios::app);
+	flight A,B;
+	char ans;
+	cout<<"\n\n\n\t\t\t\tADD A FLIGHT";
+	cout<<"\n\t\t\t---------------------------";
+	cout<<"\n";
+	do
+	{
+		int f=0;
+		cout<<"\n\t\t\tEnter details of the flight: "<<endl;
+		A.input();
+		while(file.read((char*)&B,sizeof(B)))
+		{
+			if(A.ret_no()==B.ret_no())
+			{
+				cout<<"\n\n\t\t\tFlight already registered!";
+				f=1;
+				break;
+			}
+			
+		}
+		if(f==0)
+		{
+			file.clear();
+			file.seekp(0);
+			file.write((char*)&A,sizeof(A));
+		}
+		cout<<"\n\n\t\t\tDo you want to add more: ";
+		cin>>ans;
+	}while(toupper(ans)=='Y');
+	file.close();
+	pto();
+}
+
+void delete_flight()
+{
+	ifstream ifile("flight.dat",ios::binary);
+	ofstream ofile("temp.dat",ios::binary);
+	flight A;
+	int x;
+	cout<<"\n\n\n\t\t\t\tDELETE A FLIGHT";
+	cout<<"\n\t\t\t------------------------------";
+	cout<<"\n\t\t\tEnter flight number: ";
+	cin>>x;
+	while(ifile.read((char*)&A,sizeof(A)))
+	{
+		if(A.ret_no()!=x)
+		{
+			ofile.write((char*)&A,sizeof(A));
+		}
+	}
+	ifile.close();
+	ofile.close();
+	remove("flight.dat");
+	rename("temp.dat","flight.dat");
+	cout<<"\n\n\t\t\tFlight deleted!";
+	pto();
+}
+
+void modify_flight()
+{
+	fstream file("flight.dat",ios::binary|ios::in|ios::out);
+	flight A,B;
+    int x;
+    int f=0;
+    cout<<"\n\n\n\t\t\t\tMODIFY FLIGHT DETAILS";
+	cout<<"\n\t\t\t--------------------------------------";
+	cout<<"\n\t\t\t\tEnter flight number: ";
+	cin>>x;
+	while(file.read((char*)&A,sizeof(A)))
+	{
+		if(A.ret_no()==x)
+		{
+			cout<<"\n\n\t\t\tEnter modified details: "<<endl;
+			B.input();
+			int size=sizeof(A);
+			file.seekp(-1*size,ios::cur);
+			file.write((char*)&B,sizeof(B));
+			cout<<"\n\n\t\t\tDetails modified!";
+			f=1;
+			break;
+		}
+	}
+	if(f==0)
+		cout<<"Flight number does not exist!";
+	file.close();
+	
+	pto();
+}
+void display_all_flights()
+{
+	ifstream ifile("flight.dat",ios::binary);
+	flight A;
+	cout<<"\n\n\n\t\t\t\tDETAILS OF ALL FLIGHTS";
+	cout<<"\n\t\t\t-----------------------------------------";
+	int k=0;
+	while(ifile.read((char*)&A,sizeof(A)))
+	{
+		k=1;
+		A.output();
+	}
+	if(k==0)
+		cout<<"\n\n\t\t\tNo flights are added!";
+	ifile.close();
+    pto();
+}
+void display_a_flight()
+{
+	ifstream ifile("flight.dat",ios::binary);
+	flight A;
+	int x;
+	int f=0;
+	cout<<"\n\n\n\t\t\t\tDETAILS OF A FLIGHT";
+	cout<<"\n\t\t\t--------------------------------------";
+	cout<<"\n\n\t\t\tEnter flight number: ";
+	cin>>x;
+	while(ifile.read((char*)&A,sizeof(A)))
+	{
+		if(A.ret_no()==x)
+		{
+			A.output();
+			f=1;
+			break;
+		}
+			
+	}
+	if(f==0)
+		cout<<"\n\n\t\t\tFlight number does not exist!";
+
+	ifile.close();
+	pto();
+}
+
+int check_rmn(char x[])
+{
+	passenger A;
+	ifstream ifile("passenger.dat",ios::binary);
+	while(ifile.read((char*)&A,sizeof(A)))
+	{
+		if(strcmp(A.ret_mob(),x)==0)
+		{
+			ifile.close();
+			return 1;
+		}
+	}
+	cout<<"\n\t\t\tMobile number not registered!";
+	ifile.close();
+	pto();
+	return 0;
+}
+
+void add_passenger()
+{
+	fstream file("passenger.dat",ios::binary|ios::in|ios::app);
+	passenger A,B;
+	cout<<"\n\n\n\t\t\t\tADD DETAILS OF A PASSENGER";
+	cout<<"\n\t\t\t---------------------------------------------";
+	cout<<"\n\n\t\t\tEnter your details: "<<endl;
+	A.get();
+	int f=0;
+	while(file.read((char*)&B,sizeof(A)))
+	{
+		if(A.ret_mob()==B.ret_mob())
+		{
+			cout<<"\n\n\t\t\tMobile number already registered!";
+			f=1;
+			break;
+		}
+	}
+	if(f==0)
+	{
+		file.clear();
+		file.seekp(0,ios::end);
+		file.write((char*)&A,sizeof(A));
+		cout<<"\n\n\t\t\tPassenger details added!";
+	}
+	file.close();
+	pto();
+}
+
+void modify_passenger()
+{
+	 fstream file("passenger.dat",ios::binary|ios::in|ios::out);
+	 passenger A,B;
+	 cout<<"\n\n\n\t\t\t\tMODIFY DETAILS OF A PASSENGER";
+	 cout<<"\n\t\t\t-----------------------------------------------";
+	 cout<<"\n\n\t\t\tEnter RMN: ";
+	 char x[11];
+	 ;
+	 gets(x);
+	 if(check_rmn(x)==0)
+	 {
+	 	return;
+	 }
+	cout<<"\n\t\t\tEnter new details: ";
+	B.get();
+	 while(file.read((char*)&A,sizeof(A)))
+	 {
+		if(strcmp(A.ret_mob(),x)==0)
+		{
+			int size=sizeof(A);
+			file.seekp(-1*size,ios::cur);
+			file.write((char*)&B,sizeof(B));
+		}
+	 }
+	file.close();
+	cout<<"\n\n\t\t\tDetails are modified!";
+	pto();
+}
+
+void delete_passenger()
+{
+	passenger A;
+	ifstream ifile("passenger.dat",ios::binary);
+	ofstream ofile("temp.dat",ios::binary);
+	cout<<"\n\n\n\t\t\t\tDELETE DETAILS OF A PASSENGER";
+	cout<<"\n\t\t\t-----------------------------------------------";
+	cout<<"\n\t\t\tEnter your RMN: ";
+	char x[11];
+	;
+	gets(x);
+	while(ifile.read((char*)&A,sizeof(A)))
+	{
+		if(strcmp(A.ret_mob(),x)!=0)
+		{
+			ofile.write((char*)&A,sizeof(A));
+		}
+	}
+	ifile.close();
+	ofile.close();
+	remove("passenger.dat");
+	rename("temp.dat","passenger.dat");
+	cout<<"\n\n\t\t\tPassenger details are deleted";
+	pto();
+}
+
+void display_passenger()
+{
+	passenger A;
+	ifstream ifile("passenger.dat",ios::binary);
+	cout<<"\n\n\n\t\t\t\tDETAILS OF A PASSENGER";
+	cout<<"\n\t\t\t-----------------------------------------";
+	cout<<"\n\t\t\tEnter RMN: ";
+	char x[11];
+	;
+	gets(x);
+	int f=0;
+	while(ifile.read((char*)&A,sizeof(A)))
+	{
+		if(strcmp(A.ret_mob(),x)==0 && A.ret_fl()==0)
+		{
+			A.put();
+			f=1;
+			break;
+		}
+	}
+	if(f==0)
+		cout<<"\n\n\t\t\tMobile number has not been registered!";
+	ifile.close();
+	pto();
+}
+
+void display_all_passengers()
+{
+	passenger A;
+	ifstream ifile("passenger.dat",ios::binary);
+	cout<<"\n\n\n\t\t\t\tDETAILS OF ALL PASSENGERS";
+	cout<<"\n\t\t\t---------------------------------------------";
+	int k=0;
+	while(ifile.read((char*)&A,sizeof(A)))
+	{
+		k=1;
+		if(A.ret_fl()==0)
+		{
+			A.put();
+		}
+	}
+	ifile.close();
+	if(k==0)
+		cout<<"\n\n\t\t\tNo Passengers are added!";
+	pto();
+}
+void passenger_menu()
+{
+	while(1)
+	{
+		int x;
+		cout<<"\n\n\n\n\n\t\t\t1.Add passenger";
+		cout<<"\n\n\t\t\t2.Modify passenger";
+		cout<<"\n\n\t\t\t3.Delete passenger";
+		cout<<"\n\n\t\t\t4.Display details of a passenger";
+		cout<<"\n\n\t\t\t5.Display details of all passengers";
+		cout<<"\n\n\t\t\t6.Go Back";
+		cout<<"\n\n\t\t\tEnter your choice: ";
+		cin>>x;
+		clrscr();
+		switch(x)
+		{
+			case 1:add_passenger();break;
+			case 2:modify_passenger();break;
+			case 3:delete_passenger();break;
+			case 4:display_passenger();break;
+			case 5:display_all_passengers();break;
+			case 6:return;
+		}
+		clrscr();
+	}
+}
+void display_bookings()
+{
+	flight A;
+	ifstream ifile("flight.dat",ios::binary);
+	passenger B;
+	ifstream pfile("passenger.dat",ios::binary);
+	int x;
+	cout<<"\n\n\n\t\t\t\tBOOKINGS OF A FLIGHT";
+	cout<<"\n\t\t\t-----------------------------------------";
+	cout<<"\n\n\t\t\tEnter flight number: ";
+	cin>>x;
+	int f=0;
+	while(ifile.read((char*)&A,sizeof(A)))
+	{
+		if(A.ret_no()==x)
+		{
+			int k=0;
+			while(pfile.read((char*)&B,sizeof(B)))
+			{
+				if((B.ret_fl()==x)&&(B.ret_fl()!=0))
+				{
+					B.put();
+					cout<<"\t\t\tFlight number: "<<B.ret_fl();
+					cout<<"\n\t\t\tSeats booked: "<<B.ret_book();
+					cout<<"\n\t\t\tAmount: "<<B.ret_amt();
+					cout<<"\n\n";
+					k=1;
+				}
+			}
+			f=1;
+			if(k==0)
+			{
+				cout<<"\n\n\t\t\tNo flights booked!";
+				pto();
+				ifile.close();
+				pfile.close();
+				return;
+			}
+			cout<<"\n\n\t\t\tAvailable seats: "<<A.ret_seats();
+			break;
+			
+		}
+	}
+	if(f==0)
+		cout<<"\n\n\t\t\tIncorrect flight number!";
+	ifile.close();
+	pfile.close();
+	pto();
+}
+void flight_menu()
+{
+	while(1)
+	{
+		int x;
+		cout<<"\n\n\n\n\n\t\t\t1.Add a flight";
+		cout<<"\n\n\t\t\t2.Modify a flight";
+		cout<<"\n\n\t\t\t3.Delete a flight";
+		cout<<"\n\n\t\t\t4.Display details of a flight";
+		cout<<"\n\n\t\t\t5.Display details of all flights";
+		cout<<"\n\n\t\t\t6.Display bookings of a flight";
+		cout<<"\n\n\t\t\t7.Go back";
+		cout<<"\n\n\t\t\tEnter choice: ";
+		cin>>x;
+		clrscr();
+		switch(x)
+		{
+			case 1:add_flight();break;
+			case 2:modify_flight();break;
+			case 3:delete_flight();break;
+			case 4:display_a_flight();break;
+			case 5:display_all_flights();break;
+			case 6:display_bookings();break;
+			case 7:return;
+		}
+		clrscr();
+	}
+}
+void book_flight()
+{
+	cout<<"\n\n\n\t\t\t\tBOOK YOUR FLIGHT";
+	cout<<"\n\t\t\t--------------------------------------";
+	passenger B;
+	date dd,da;
+	char depart[20],arr[20];
+	;
+	cout<<"\n\t\t\tEnter city of departure: ";
+	gets(depart);
+	cout<<"\n\t\t\tEnter city of arrival: ";
+	gets(arr);
+	cout<<"\n\t\t\tEnter date of departure: ";
+	in_date(dd);
+	cout<<"\n\t\t\tEnter date of arrival: ";
+	in_date(da);
+	int book;
+	flight A;
+	fstream file("flight.dat",ios::binary|ios::in|ios::out);
+
+	int flag=0;
+	cout<<"\n\n\t\t\tAvailable flights are:";
+	while(file.read((char*)&A,sizeof(A)))
+	{
+		if(strcmpi(A.ret_depart(),depart)==0 && strcmpi(A.ret_arr(),arr)==0 && cmp_date(A.ret_a_date(),da)==1 && cmp_date(A.ret_d_date(),dd)==1)
+		{
+			A.output();
+			cout<<"\n\n\t\t\t";
+			flag=1;
+		}
+	}
+
+	if(flag==1)
+	{
+		int f;
+		cout<<"\n\t\t\tEnter flight number: ";
+		cin>>f;
+		file.clear();
+		file.seekg(0,ios::beg);
+		int g=0;
+		int k=0;
+        while(file.read((char*)&A,sizeof(A)))
+		{
+			if(strcmpi(A.ret_depart(),depart)==0 && strcmpi(A.ret_arr(),arr)==0 && A.ret_no()==f && cmp_date(A.ret_a_date(),da)==1 && cmp_date(A.ret_d_date(),dd)==1)
+			{
+				cout<<"\n\t\t\tYour flight is: ";
+				A.output();
+				char x[11];
+				cout<<"\n\t\t\tEnter RMN: ";
+				;
+				gets(x);
+				fstream pfile("passenger.dat",ios::binary|ios::in|ios::out);
+				while(pfile.read((char*)&B,sizeof(B)))
+				{
+				  if(strcmp(B.ret_mob(),x)==0)
+				  {
+				  		cout<<"\n\n\t\t\tEnter no of passengers: ";
+						cin>>book;
+						int size=sizeof(B);
+ 						if(B.ret_fl()==0)
+							pfile.seekp(-1*size,ios::cur);
+						else
+ 							pfile.seekp(0,ios::end);
+ 						B.book(book,f,A.ret_cost());
+						pfile.write((char*)&B,sizeof(B));
+						g=1;
+						break;
+				  }
+				}
+				if(g==0)
+				{
+					cout<<"\n\n\t\tMobile number has not been registered!";
+					pto();
+					return;
+				}
+				
+				A.dec_seats(book);
+				int s=sizeof(A);
+				file.seekp(-1*s,ios::cur);
+				file.write((char*)&A,sizeof(A));
+				pfile.close();
+				k=1;
+				break;
+			}
+		}
+		if(k==0)
+		{
+			cout<<"\n\n\t\t\tWrong flight number entered!";
+			pto();
+		}
+	 }
+	 else
+	 {
+		cout<<"\n\n\t\tNo flights are available for this destination!\n\n";
+		pto();
+	 }
+	file.close();
+}
+void cancel_flight()
+{
+	cout<<"\n\n\n\t\t\t\tCANCEL YOUR FLIGHT";
+	cout<<"\n\t\t\t----------------------------------------";
+	passenger B;
+	char x[11];
+	int f=0,z=0;
+	cout<<"\n\n\t\t\tEnter RMN: ";
+	;
+	gets(x);
+	int g=0;
+	fstream pfile("passenger.dat",ios::binary|ios::in|ios::out);
+	ofstream ofile("temp.dat",ios::binary);
+	while(pfile.read((char*)&B,sizeof(B)))
+	{
+		if(strcmp(B.ret_mob(),x)==0)
+		{
+			g=1;
+			f=B.ret_fl();
+			z=B.ret_book();
+			B.cancel();
+			int size=sizeof(B);
+			pfile.seekp(-1*size,ios::cur);
+			pfile.write((char*)&B,sizeof(B));
+         	flight A;
+			fstream file("flight.dat",ios::binary|ios::in|ios::out);
+
+
+			while(file.read((char*)&A,sizeof(A)))
+			{
+				if(A.ret_no()==f)
+				{
+					A.cancel(z);
+					int s=sizeof(A);
+					file.seekp(-1*s,ios::cur);
+					file.write((char*)&A,sizeof(A));
+					file.close();
+					cout<<"\n\n\t\t\tCancellation is successful!";
+					break;
+				}
+			}
+
+		}
+	}
+ 	  if(g==0)
+	{
+		cout<<"\n\n\t\t    Entered mobile number has not been registered!";
+		pto();
+		return;
+	}
+	pfile.close();
+
+	pto();
+
+
+}
+
+void main_menu()
+{
+	while(1)
+	{
+		int x;
+		cout<<"\n\n\n\n\n\t\t\t1.flight menu";
+		cout<<"\n\n\t\t\t2.passenger menu";
+		cout<<"\n\n\t\t\t3.Book a flight";
+		cout<<"\n\n\t\t\t4.Cancel a flight";
+		cout<<"\n\n\t\t\t5.Quit";
+		cout<<"\n\n\t\t\tEnter choice: ";
+		cin>>x;
+		clrscr();
+		switch(x)
+		{
+			case 1:flight_menu();break;
+			case 2:passenger_menu();break;
+			case 3:book_flight();break;
+			case 4:cancel_flight();break;
+			case 5:exit(0);
+		}
+		clrscr();
+	}
+}
+void intro()
+{
+	cout<<"\n\n\n\n\n\t\t\tPROJECT MADE BY:";
+	cout<<"\n\n\t\t\tYASHASVI KAPOOR";
+	cout<<"\n\n\t\t\tXII-D";
+	pto();
+	clrscr();
+}
+void airline()
+{
+	cout<<"\n\n\n\n\n\t\t\tWELCOME  TO  INDIGO  AIRLINES.....";
+	cout<<"\n\t\t\t-------------------------------------";
+	cout<<"\n\n\n\t\t\tINDIGO AIRLINES...ALWAYS AT YOUR SERVICE...";
+	pto();
+	clrscr();
+}
+void password()
+{
+	char ch[]="45678910";
+	char x[20];
+	cout<<"\n\n\n\n\n\n\t\t\tEnter password: ";
+	gets(x);
+	while(1)
+	{
+		if(strcmp(x,ch)!=0)
+		{
+			cout<<"\n\n\t\t\tPassword is incorrect!";
+			cout<<"\n\t\t\tTry again: ";
+			gets(x);
+		}
+		else
+			return;
+	}
+}
+
+void main()
+{
+	password();
+	clrscr();
+	intro();
+	airline();
+	main_menu();
+}
